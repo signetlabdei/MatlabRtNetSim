@@ -199,8 +199,8 @@ classdef SimulationNode < handle
             
             % SVD-based BF. Optimal for analog BF
             % Considering narrowband channel
-            switch(bfMode) % SWITCH for future cases
-                case {'SVD','steeringVec'}
+            switch(lower(bfMode)) % case insensitive
+                case 'svd'
                     [U,~,V] = svd(sum(H,3), "econ");
                     rxBf = conj(U(:,1));
                     txBf = V(:,1);
