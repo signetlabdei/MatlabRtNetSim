@@ -33,7 +33,10 @@ params.BW = 29 * 13.889e6; % Bandiwdth [Hz]
 params.F = 5; % Noise figure [dB]
 
 params.dataDirection = "DL"; % ["DL", "UL"]
-params.bfMode = "SVD"; % ["SVD", "geometric"]
+params.bfMode = "SVD"; % ["SVD", "geometric", "codebook"]
+
+params.bsCodebookFile = sprintf("codebooks/%dx%d_noTaper.mat", params.bsAnt.M, params.bsAnt.N);
+params.utCodebookFile = sprintf("codebooks/%dx%d_noTaper.mat", params.utAnt.M, params.utAnt.N);
 
 % Reference nodes are the ones whose metrics will be collected
 params.txRefIdx = 2; % Node idx of the reference transmitter

@@ -212,6 +212,20 @@ classdef SimulationNode < handle
                     angleRxTx = SimulationNode.getAbsoluteAngle(rx,tx);
                     rxBf = rx.ant.getSteeringVector(angleRxTx.el, angleRxTx.az, rx.downtilt, rx.sectorDir);
                     rxBf = rxBf / norm(rxBf);
+                case 'codebook'
+                    txCodebook = tx.ant.codebook;
+                    rxCodebook = rx.ant.codebook;
+                    
+                    % Compute BF gain for each tx/rx codeword pair
+                    Hnarrow = sum(H,3);
+                    bfGainMatrix = 20*log10(abs(rxCodebook.' * Hnarrow * txCodebook));
+                    
+                    % Find best pair
+                    [~, idx] = max(triu(bfGainMatrix), [], 'all', 'linear');
+                    [rxIdx, txIdx] = ind2sub(size(bfGainMatrix), idx);
+                    
+                    txBf = txCodebook(:, txIdx);
+                    rxBf = rxCodebook(:, rxIdx);
                 otherwise
                     error("Mode '%s' not yet supported",bfMode)
             end

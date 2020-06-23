@@ -16,6 +16,15 @@ nodesPositions = readAllNodesPositions(scenarioPath);
 
 tTot = length(qdFiles{1,2});
 
+% Setup antennas
+if params.bfMode == "codebook"
+    bsCodebook = load(params.bsCodebookFile);
+    utCodebook = load(params.utCodebookFile);
+    
+    params.bsAnt.codebook = bsCodebook.codebook;
+    params.utAnt.codebook = utCodebook.codebook;
+end
+
 % BS setup
 bs = SimulationNode.empty();
 for i = 1:length(params.bsIdxs)

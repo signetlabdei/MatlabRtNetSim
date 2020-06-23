@@ -22,6 +22,8 @@ classdef Antenna < handle
         Ng % number of horizontal panels
         dgv % spacing between vertical panels normalized in lambda units
         dgh % spacing between horizontal panels normalized in lambda units
+        
+        codebook % beamforming codebook, (Nant)x(Ncodewords)
     end
     
     
@@ -96,6 +98,14 @@ classdef Antenna < handle
             end
         end
         
+        % Setter/Getter
+        function set.codebook(A, val)
+            assert(size(val, 1) == A.getNumAnt(), "The first dimension of the codebook should be equal to the number of antenna elements of the antenna")
+            A.codebook = val;
+        end
+        
+        
+        % Methods
         function pos = getElementPositions(A)
             vIdx = repelem(0:A.M-1, A.N).'; % [0,0,0,...,M-1,M-1,M-1]
             hIdx = repmat(0:A.N-1, 1, A.M).'; % [0,1,2,...,N-1,0,1,2,...,N-1]
@@ -104,7 +114,6 @@ classdef Antenna < handle
         end
         
         
-        % Methods
         function a = getSteeringVector(A,theta,phi,downtilt,sectorDir)
             if ~isrow(theta) || ~isrow(phi)
                 error("theta and phi should be scalar or row vectors")
