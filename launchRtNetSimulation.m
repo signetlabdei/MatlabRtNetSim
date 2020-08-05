@@ -26,35 +26,27 @@ if params.bfMode == "codebook"
 end
 
 % BS setup
-bs = SimulationNode.empty();
+bss = SimulationNode.empty();
 for i = 1:length(params.bsIdxs)
     nodeIdx = params.bsIdxs(i);
-    bs(i) = SimulationNode(params.bsAnt, params.bsSectorDir, params.bsDowntilt,...
+    bss(i) = SimulationNode(params.bsAnt, params.bsSectorDir, params.bsDowntilt,...
         nodesPositions{nodeIdx}(1,:), [0,0,0], "",...
         NaN, params.Ptx, params.fc, params.BW);
-    bs(i).nodeIdx = nodeIdx;
+    bss(i).nodeIdx = nodeIdx;
 end
 
 % UT setup
-ut = SimulationNode.empty();
+uts = SimulationNode.empty();
 for i = 1:length(params.utIdxs)
     nodeIdx = params.utIdxs(i);
-    ut(i) = SimulationNode(params.utAnt, params.utSectorDir, params.utDowntilt,...
+    uts(i) = SimulationNode(params.utAnt, params.utSectorDir, params.utDowntilt,...
         nodesPositions{nodeIdx}(1,:), [0, 0, 0], "",...
         params.F, NaN, params.fc, params.BW);
-    ut(i).nodeIdx = nodeIdx;
+    uts(i).nodeIdx = nodeIdx;
 end
 
-switch(params.dataDirection)
-    case "DL"
-        txRef = bs([bs.nodeIdx] == params.txRefIdx);
-        rxRef = ut([ut.nodeIdx] == params.rxRefIdx);
-    case "UL"
-        txRef = ut([ut.nodeIdx] == params.txRefIdx);
-        rxRef = bs([bs.nodeIdx] == params.rxRefIdx);
-    otherwise
-        error("Data direction '%s' not recognized",params.dataDirection)
-end
+[txRef, rxRef] = getTxRx(bss, uts,...
+    params.bsRefIdx, params.utRefIdx, params.dataDirection);
 
 N_dbm = rxRef.getNoise();
 
@@ -76,8 +68,8 @@ if params.saveHref
 end
 
 for t = 1:tTot
-    ut = updateNodesPositions(nodesPositions, t, ut);
-    bs = updateNodesPositions(nodesPositions, t, bs);
+    uts = updateNodesPositions(nodesPositions, t, uts);
+    bss = updateNodesPositions(nodesPositions, t, bss);
     
     [Href, Htime] = getQdChannel(qdFiles, t, txRef, rxRef, params);
     [txBf, rxRefBf] = SimulationNode.getBfVectors(params.bfMode, Href, txRef, rxRef);
@@ -87,7 +79,7 @@ for t = 1:tTot
     bfGain = getBfGain(Href, NaN, rxRef.storedBfVec, txBf);
     Prx_dbm = txRef.Ptx + bfGain;
     
-    I_dbm = getQdInterference(qdFiles, t, rxRef, ut, bs, params);
+    I_dbm = getQdInterference(qdFiles, t, rxRef, uts, bss, params);
     
     out.Prx_dbm(t) = Prx_dbm;
     out.I_dbm(t) = I_dbm;
