@@ -221,7 +221,7 @@ classdef SimulationNode < handle
                     bfGainMatrix = 20*log10(abs(rxCodebook.' * Hnarrow * txCodebook));
                     
                     % Find best pair
-                    [~, idx] = max(triu(bfGainMatrix), [], 'all', 'linear');
+                    [~, idx] = max(bfGainMatrix, [], 'all', 'linear');
                     [rxIdx, txIdx] = ind2sub(size(bfGainMatrix), idx);
                     
                     txBf = txCodebook(:, txIdx);
