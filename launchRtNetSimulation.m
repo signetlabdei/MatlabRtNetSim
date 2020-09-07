@@ -46,7 +46,7 @@ for i = 1:length(params.utIdxs)
 end
 
 [txRef, rxRef] = getTxRx(bss, uts,...
-    params.bsRefIdx, params.utRefIdx, params.dataDirection);
+    params.txRefIdx, params.rxRefIdx, params.dataDirection);
 
 N_dbm = rxRef.getNoise();
 
