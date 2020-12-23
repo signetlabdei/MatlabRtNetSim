@@ -13,10 +13,10 @@ if qdFile.numRays == 0
     H = zeros(rxNode.ant.getNumAnt(), txNode.ant.getNumAnt());
     
 else
-    txAng.el = deg2rad(qdFile.aodEl);
-    txAng.az = deg2rad(qdFile.aodAz);
-    rxAng.el = deg2rad(qdFile.aoaEl);
-    rxAng.az = deg2rad(qdFile.aoaAz);
+    txAng.el = deg2rad(qdFile.aodEl');
+    txAng.az = deg2rad(qdFile.aodAz');
+    rxAng.el = deg2rad(qdFile.aoaEl');
+    rxAng.az = deg2rad(qdFile.aoaAz');
     
     txSteerVec = txNode.ant.getSteeringVector(txAng.el, txAng.az, txDowntilt, txSectorDir);
     txElPatt = txNode.ant.getElementPattern(txAng.el, txAng.az, txDowntilt, txSectorDir);
@@ -26,8 +26,8 @@ else
     rxElPatt = rxNode.ant.getElementPattern(rxAng.el, rxAng.az, rxDowntilt, rxSectorDir);
     rxVec = rxElPatt .* rxSteerVec;
     
-    signalPhase = exp(1i * (-2*pi * qdFile.delay * params.fc + qdFile.phaseOffset));
-    pathGain_dB = qdFile.pathGain;
+    signalPhase = exp(1i * (-2*pi * qdFile.delay * params.fc + qdFile.phaseOffset)).';
+    pathGain_dB = qdFile.pathGain';
     pathGainMag_lin = 10.^(pathGain_dB / 20);
     H = pathGainMag_lin .* signalPhase .* conj(rxVec) * txVec';
     
