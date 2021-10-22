@@ -2,7 +2,7 @@ clear
 close all
 clc
 
-rtSrcFolder = "qd-realization/src";
+rtSrcFolder = "../qd-realization/src";
 
 addpath("classes",...
     "functions",...
@@ -15,6 +15,7 @@ scenario = fullfile(rtSrcFolder, 'examples/L-Room');
 
 params.processRatios = true; % ratios are SNR, SINR, SIR, INR
 params.saveHref = false; % warning: the output can be extremely large!
+params.saveScalarTaps = true; % scalar taps contain delay and complex (IQ) gain
 
 params.bsAnt = Antenna(8, 8, 0.5, 0.5, @(t,f) 1); % Antenna configuration for base stations
 params.utAnt = Antenna(4, 4, 0.5, 0.5, @(t,f) 1); % Antenna configuration for users

@@ -2,6 +2,7 @@ function [varargout] = getSvH(H,n)
 
 assert(n == nargout);
 
+H = sum(H, 3);
 sv = svd(H);
 
 validNOut = min(nargout,length(sv));

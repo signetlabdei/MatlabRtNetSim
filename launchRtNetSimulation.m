@@ -116,17 +116,21 @@ end
 if params.saveHref
     out.Href = nan(rxRef.ant.getNumAnt(), txRef.ant.getNumAnt(), tTot);
 end
+if params.saveScalarTaps
+    out.scalarTaps(tTot).delay =  [];
+    out.scalarTaps(tTot).iq =  [];
+end
 
 for t = 1:tTot
     uts = updateNodesPositions(nodesPositions, t, uts);
     bss = updateNodesPositions(nodesPositions, t, bss);
     
-    [Href, Htime] = getQdChannel(qdFiles, t, txRef, rxRef, params);
+    [Href, tapDelay, Htime] = getQdChannel(qdFiles, t, txRef, rxRef, params);
     [txBf, rxRefBf] = SimulationNode.getBfVectors(params.bfMode, Href, txRef, rxRef);
     % Store UT ref BF vector towards BS for interference
     % computation
     rxRef.storeBfVector(rxRefBf);
-    bfGain = getBfGain(Href, NaN, rxRef.storedBfVec, txBf);
+    [bfGain, tapsIq] = getBfGain(Href, NaN, rxRef.storedBfVec, txBf);
     Prx_dbm = txRef.Ptx + bfGain;
     
     I_dbm = getQdInterference(qdFiles, t, rxRef, uts, bss, params);
@@ -144,6 +148,11 @@ for t = 1:tTot
     end
     if params.saveHref
         out.Href(:,:,t) = Href;
+    end
+    if params.saveScalarTaps
+        assert(length(tapDelay) == length(tapsIq))
+        out.scalarTaps(t).delay =  tapDelay;
+        out.scalarTaps(t).iq =  tapsIq;
     end
 end
 

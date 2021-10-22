@@ -1,4 +1,4 @@
-function [H, Htime] = getQdChannel(qdFiles, t, txNode, rxNode, params)
+function [H, tapDelay, Htime] = getQdChannel(qdFiles, t, txNode, rxNode, params)
 
 qdFile = qdFiles{txNode.nodeIdx, rxNode.nodeIdx}(t);
 
@@ -29,8 +29,15 @@ else
     signalPhase = exp(1i * (-2*pi * qdFile.delay * params.fc + qdFile.phaseOffset)).';
     pathGain_dB = qdFile.pathGain';
     pathGainMag_lin = 10.^(pathGain_dB / 20);
-    H = pathGainMag_lin .* signalPhase .* conj(rxVec) * txVec';
     
+    % make wideband channel (U x S x N)
+    rxVec = permute(rxVec, [1,3,2]);
+    txVec = permute(txVec, [3,1,2]);
+    pathGainMag_lin = permute(pathGainMag_lin, [1,3,2]);
+    signalPhase = permute(signalPhase, [1,3,2]);
+    
+    H = (pathGainMag_lin .* signalPhase) .* conj(rxVec) .* conj(txVec);
+    tapDelay = qdFile.delay;
 end
 
 Htime = toc(t0);
