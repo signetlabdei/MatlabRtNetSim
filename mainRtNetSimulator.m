@@ -54,7 +54,6 @@ params.bsInterfIdxs = []; % Node idxs of the interfering base station
 params.utInterfIdxs = []; % Node idxs of the interfering user
 
 %% simulation
-params.rtFolder = rtSrcFolder;
 out = launchRtNetSimulation(scenario, params);
 
 %% Plot (sanity check)
