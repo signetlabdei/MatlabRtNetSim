@@ -1,4 +1,18 @@
 function tapMatrix = computeAllChannelTaps(scenario, params)
+% Compute channel taps for the given scenario based on the parameters.
+% Taps are reduced to complex scalars by applying the TX/RX beamforming
+% vectors to the channel matrix, for each node pair and for each time
+% stamp.
+% IN:
+%   - scenario: the path to the qd-realization scenario to process
+%   - params: the parameters needed by the `launchRtNetSimulation` function
+% OUT:
+%   tapMatrix: NxN cell array (where N is the number of nodes) containing
+%     arrays of structs of length T (where T is the number of time steps). The
+%     structs contains fields `delay` and `iq`, numeric arrays representing
+%     complex taps.
+%     Cells (i,j) and (j,i) contain the same taps (symmetric channel) and cell
+%     (i,i) (i.e., the self-channel) is empty.
 
 params.paraCfg = parameterCfg(scenario);
 
