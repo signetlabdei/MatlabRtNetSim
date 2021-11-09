@@ -1,6 +1,5 @@
-function tapMatrix = computeAllChannelTaps(scenario, params, rtSrcFolder)
+function tapMatrix = computeAllChannelTaps(scenario, params)
 
-params.rtFolder = rtSrcFolder;
 params.paraCfg = parameterCfg(scenario);
 
 params.processRatios = false; % ratios are SNR, SINR, SIR, INR

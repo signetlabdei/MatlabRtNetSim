@@ -26,7 +26,7 @@ params.bsCodebookFile = sprintf("codebooks/%dx%d_noTaper.mat", params.bsAnt.M, p
 params.utCodebookFile = sprintf("codebooks/%dx%d_noTaper.mat", params.utAnt.M, params.utAnt.N);
 
 %% Simulation
-tapMatrix = computeAllChannelTaps(scenario, params, rtSrcFolder);
+tapMatrix = computeAllChannelTaps(scenario, params);
 save(fullfile(scenario, 'allChannelTaps.mat'), 'tapMatrix', 'params', 'scenario')
 
 %% Plot (sanity check)
