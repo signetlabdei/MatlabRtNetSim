@@ -11,6 +11,7 @@ t0 = tic;
 
 if qdFile.numRays == 0
     H = zeros(rxNode.ant.getNumAnt(), txNode.ant.getNumAnt());
+    tapDelay = 0;
     
 else
     txAng.el = deg2rad(qdFile.aodEl');
